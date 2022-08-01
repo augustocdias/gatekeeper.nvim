@@ -1,8 +1,8 @@
 # Gatekeeper.nvim
 
-This plugin intends to make plugins outside of the current working directory
-read only and non modifiable. To do that it sets an auto command for every
-time a buffer gets loaded.
+This plugin intends to make buffers with from files outside of the current
+working directory read only and non modifiable. To do that it sets an auto 
+command for every time a buffer gets loaded.
 
 The purpose for the existence of this plugin is basically allowing to set
 white lists for folders or files.
