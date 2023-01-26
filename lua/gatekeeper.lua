@@ -16,7 +16,7 @@ local function is_excluded(bufname, cwd)
             return true
         end
     end
-    for _, val in pairs(options.exclude) do
+    for _, val in pairs(options.exclude_regex) do
         if string.match(bufname, val) then
             return true
         end
