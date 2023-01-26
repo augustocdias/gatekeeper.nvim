@@ -6,6 +6,7 @@ local M = {}
 
 local options = {
     exclude = {},
+    debug = false,
 }
 
 local function is_excluded(bufname, cwd)
@@ -26,6 +27,14 @@ function M.setup(opts)
         group = group,
         callback = function()
             if not is_excluded(vim.api.nvim_buf_get_name(0), vim.fn.getcwd()) then
+                if options.debug then
+                    vim.notify(
+                        'Buffer '
+                            .. vim.api.nvim_buf_get_name(0)
+                            .. ' is being blocked from being edited. \n CWD: '
+                            .. vim.fn.getcwd()
+                    )
+                end
                 vim.bo.readonly = true
                 vim.bo.modifiable = false
             end

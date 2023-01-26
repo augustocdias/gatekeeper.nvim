@@ -1,7 +1,7 @@
 # Gatekeeper.nvim
 
 This plugin intends to make buffers with from files outside of the current
-working directory read only and non modifiable. To do that it sets an auto 
+working directory read only and non modifiable. To do that it sets an auto
 command for every time a buffer gets loaded.
 
 The purpose for the existence of this plugin is basically allowing to set
@@ -13,7 +13,8 @@ Install with your favorite package manager and call
 
 ```lua
 require('gatekeeper').setup({
-    exclude = {}
+    exclude = {},
+    debug = false, -- will call vim.notify with info when it is being evaluated
 })
 ```
 
