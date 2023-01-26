@@ -10,18 +10,35 @@ local options = {
     debug = false,
 }
 
-local function is_excluded(bufname, cwd)
+local function is_excluded(bufname, cwd, should_log)
+    local should_log = should_log or false
     for _, val in pairs(options.exclude) do
-        if string.sub(bufname, 1, string.len(val)) == val then
+        local will_exclude = string.sub(bufname, 1, string.len(val)) == val
+        if should_log then
+            print('Checking ' .. bufname .. ' against ' .. val .. ': ' .. (will_exclude and 'yes' or 'no'))
+        end
+        if will_exclude then
             return true
         end
     end
     for _, val in pairs(options.exclude_regex) do
-        if string.match(bufname, val) then
+        local will_exclude = string.match(bufname, val)
+        if should_log then
+            print('Checking regex ' .. bufname .. ' against ' .. val .. ': ' .. (will_exclude and 'yes' or 'no'))
+        end
+        if will_exclude then
             return true
         end
     end
-    return string.sub(bufname, 1, string.len(cwd)) == cwd
+    local is_subfolder = string.sub(bufname, 1, string.len(cwd)) == cwd
+    if should_log then
+        print('Is ' .. bufname .. ' subfolder of ' .. cwd .. '? ' .. (is_subfolder and 'yes' or 'no'))
+    end
+    return is_subfolder
+end
+
+function M.explain()
+    is_excluded(vim.api.nvim_buf_get_name(0), vim.fn.getcwd(), true)
 end
 
 function M.setup(opts)
@@ -36,9 +53,9 @@ function M.setup(opts)
                 if options.debug then
                     vim.notify(
                         'Buffer '
-                            .. vim.api.nvim_buf_get_name(0)
-                            .. ' is being blocked from being edited. \n CWD: '
-                            .. vim.fn.getcwd()
+                        .. vim.api.nvim_buf_get_name(0)
+                        .. ' is being blocked from being edited. \n CWD: '
+                        .. vim.fn.getcwd()
                     )
                 end
                 vim.bo.readonly = true
@@ -46,9 +63,9 @@ function M.setup(opts)
             elseif options.debug then
                 vim.notify(
                     'Buffer '
-                        .. vim.api.nvim_buf_get_name(0)
-                        .. ' is not being blocked from being edited. \n CWD: '
-                        .. vim.fn.getcwd()
+                    .. vim.api.nvim_buf_get_name(0)
+                    .. ' is not being blocked from being edited. \n CWD: '
+                    .. vim.fn.getcwd()
                 )
             end
         end,
@@ -57,6 +74,7 @@ function M.setup(opts)
         vim.bo.readonly = false
         vim.bo.modifiable = true
     end, { desc = 'Sets current buffer to be writable and modifiable' })
+    vim.api.nvim_create_user_command('GTExplain', M.explain, { desc = 'Explain the checks on the current buffer' })
 end
 
 return M

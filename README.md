@@ -57,3 +57,7 @@ Will notify if a file is being blocked or not when it is evaluated.
 
 You can call `:GTForceWrite` on any buffer to revert and force it to be writable
 and modifiable.
+
+If you want to check why some buffer is or is not being blocked, you can call `:GTExplain`.
+It will print all checks on your settings against the current buffer until one
+evaluates to true (which means it found an exclusion/reason to not block).
