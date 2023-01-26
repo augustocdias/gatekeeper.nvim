@@ -6,12 +6,18 @@ local M = {}
 
 local options = {
     exclude = {},
+    exclude_regex = {},
     debug = false,
 }
 
 local function is_excluded(bufname, cwd)
     for _, val in pairs(options.exclude) do
         if string.sub(bufname, 1, string.len(val)) == val then
+            return true
+        end
+    end
+    for _, val in pairs(options.exclude) do
+        if string.match(bufname, val) then
             return true
         end
     end
