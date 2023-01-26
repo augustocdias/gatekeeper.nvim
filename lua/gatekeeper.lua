@@ -37,6 +37,13 @@ function M.setup(opts)
                 end
                 vim.bo.readonly = true
                 vim.bo.modifiable = false
+            elseif options.debug then
+                vim.notify(
+                    'Buffer '
+                        .. vim.api.nvim_buf_get_name(0)
+                        .. ' is not being blocked from being edited. \n CWD: '
+                        .. vim.fn.getcwd()
+                )
             end
         end,
     })
