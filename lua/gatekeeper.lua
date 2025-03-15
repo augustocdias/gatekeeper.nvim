@@ -49,24 +49,16 @@ function M.setup(opts)
         pattern = '*',
         group = group,
         callback = function()
-            if not is_excluded(vim.api.nvim_buf_get_name(0), vim.fn.getcwd()) then
+            local bufname = vim.fs.normalize(vim.api.nvim_buf_get_name(0))
+            local cwd = vim.fs.normalize(vim.fn.getcwd())
+            if not is_excluded(bufname, cwd) then
                 if options.debug then
-                    vim.notify(
-                        'Buffer '
-                        .. vim.api.nvim_buf_get_name(0)
-                        .. ' is being blocked from being edited. \n CWD: '
-                        .. vim.fn.getcwd()
-                    )
+                    vim.notify('Buffer ' .. bufname .. ' is being blocked from being edited. \n CWD: ' .. cwd)
                 end
                 vim.bo.readonly = true
                 vim.bo.modifiable = false
             elseif options.debug then
-                vim.notify(
-                    'Buffer '
-                    .. vim.api.nvim_buf_get_name(0)
-                    .. ' is not being blocked from being edited. \n CWD: '
-                    .. vim.fn.getcwd()
-                )
+                vim.notify('Buffer ' .. bufname .. ' is not being blocked from being edited. \n CWD: ' .. cwd)
             end
         end,
     })
